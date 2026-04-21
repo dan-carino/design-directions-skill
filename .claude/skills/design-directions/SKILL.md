@@ -172,7 +172,7 @@ tabsEl.addEventListener('click', e => {
 
 ### 4c. README.md
 
-Brief, variant names + concepts, and: `open "<slug>-canvas.html"`.
+Brief, variant names + concepts, and a command to open the canvas (`open` on macOS, `start` on Windows, `xdg-open` on Linux).
 
 ---
 
@@ -181,7 +181,7 @@ Brief, variant names + concepts, and: `open "<slug>-canvas.html"`.
 - Path to the folder
 - One line per variant
 - `open` command for the canvas
-- Reminder that Tweaks are pre-populated and he can ask for more controls, bake-in, or direct edits
+- Reminder that Tweaks are pre-populated and they can ask for more controls, bake-in, or direct edits
 
 ---
 
@@ -203,7 +203,7 @@ When the user says "keep that value" → hard-code it in the variant's base CSS 
 - **Never skip Phase 2 questions.**
 - **No frameworks.** Vanilla HTML/CSS/JS only — the user edits these by hand.
 - **Real content only.** Pull from context files. If context is thin, ask.
-- **Vibe Projects is outside the vault.** No `[[wikilinks]]` in generated files.
+- **No `[[wikilinks]]` or Obsidian-specific syntax** in generated files — output is plain HTML.
 - **One project = one folder.**
 - **Always use postMessage for iframe wiring**, never `contentDocument` direct access (breaks on `file://`).
 - **Every variant must define the 4 standard CSS vars** (`--accent`, `--bg`, `--h1-size`, `--body-size`) and include the postMessage listener — this is the contract the canvas depends on.

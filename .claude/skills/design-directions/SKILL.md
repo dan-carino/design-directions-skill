@@ -1,19 +1,19 @@
 ---
 name: design-directions
-description: "Generate hi-fi HTML prototype variants from context files, arranged on a tabbed canvas with live Tweaks controls. Mirrors the Claude Design prototype flow. Use when Dan says '/design-directions', 'design directions', or provides context files and asks for multiple visual directions."
+description: "Generate hi-fi HTML prototype variants from context files, arranged on a tabbed canvas with live Tweaks controls. Mirrors the Claude Design prototype flow. Use when the user says '/design-directions', 'design directions', or provides context files and asks for multiple visual directions."
 argument-hint: <project name or brief>
 ---
 
 # Prototype Skill — Multi-Variant HTML Prototyping
 
-Replicates the Claude Design prototype outcome: ingest context → clarifying questions → multiple standalone hi-fi HTML variants + a canvas file with tabs, sticky notes, and a live Tweaks sidebar. Output lives in `/Users/dancarino/Vibe Projects/<project-slug>/`.
+Replicates the Claude Design prototype outcome: ingest context → clarifying questions → multiple standalone hi-fi HTML variants + a canvas file with tabs, sticky notes, and a live Tweaks sidebar. Output lives in `~/Vibe Projects/<project-slug>/` (create the folder if it doesn't exist).
 
 ---
 
 ## Phase 1 — Load context
 
-1. **Identify the project.** `$ARGUMENTS` is the project name or brief. If empty, ask Dan for a name.
-2. **Collect context.** Read any files Dan attached or referenced. If Dan points at a folder, read its index file + any prompt/spec files inside. If nothing is attached, ask what to use.
+1. **Identify the project.** `$ARGUMENTS` is the project name or brief. If empty, ask the user for a name.
+2. **Collect context.** Read any files the user attached or referenced. If the user points at a folder, read its index file + any prompt/spec files inside. If nothing is attached, ask what to use.
 3. **Acknowledge.** One short paragraph: "I read X, Y, Z. Here's my understanding of the goal: …" — then proceed to questions.
 
 ---
@@ -24,7 +24,7 @@ Ask in one batch with a default on each:
 
 1. **Scope** — one variant or multiple on a canvas? (Default: 4 variants.)
 2. **Fidelity** — wireframe, hi-fi static, or interactive? (Default: hi-fi static.)
-3. **Key screen** — which single screen is THE screen? (Default: ask Dan — don't guess.)
+3. **Key screen** — which single screen is THE screen? (Default: ask the user — don't guess.)
 4. **Differentiation axis** — what should variants differ on? (Default: typography + layout + tone, same content.)
 5. **Extras** — any must-have UI pattern? (Default: none.)
 
@@ -74,7 +74,7 @@ Add this at the end of `<body>` so the canvas can push CSS var changes live:
 
 ### 4b. Canvas file
 
-Filename: `<project-slug>-canvas.html`. This is the main file Dan opens.
+Filename: `<project-slug>-canvas.html`. This is the main file the user opens.
 
 **Canvas chrome — visual spec (labs.google light mode aesthetic):**
 - Font: `Plus Jakarta Sans` (via Google Fonts, weights 400/500/600/700)
@@ -91,7 +91,7 @@ Filename: `<project-slug>-canvas.html`. This is the main file Dan opens.
 2. **Canvas tab** (default view): 2-column grid of variant cards. Each card has:
    - A label row (background `#fafafa`, border-bottom `rgba(0,0,0,0.05)`): variant name (bold), one-line concept (muted), pill-shaped "Open ↗" link
    - The iframe (aspect-ratio container, `padding-top: 75%`, background `#f8f9fa`)
-   - A **sticky note** below the card — written by Claude, not by Dan. Alternating left/right rotation per row.
+   - A **sticky note** below the card — written by Claude, not by the user. Alternating left/right rotation per row.
 
    **Sticky note spec:**
    - Font: `Patrick Hand` (via Google Fonts) at `17px`, `line-height: 1.45`
@@ -188,20 +188,20 @@ Brief, variant names + concepts, and: `open "<slug>-canvas.html"`.
 ## Phase 6 — Iterate (stay open after delivery)
 
 ### (a) Direct tweaks
-Dan says "make the accent greener on B" → edit the variant file directly, no controls added.
+the user says "make the accent greener on B" → edit the variant file directly, no controls added.
 
 ### (b) Live controls (pre-populated by default, add more on request)
-Every canvas ships with the 4 shared controls pre-wired (Typography + Colors). When Dan asks for more — e.g. "add a border-radius slider to C" — add a new entry to the variant's `controls` array in the `TWEAKS` object, and add the corresponding CSS var to the variant HTML if it doesn't exist yet.
+Every canvas ships with the 4 shared controls pre-wired (Typography + Colors). When the user asks for more — e.g. "add a border-radius slider to C" — add a new entry to the variant's `controls` array in the `TWEAKS` object, and add the corresponding CSS var to the variant HTML if it doesn't exist yet.
 
 ### (c) Bake-in and remove
-When Dan says "keep that value" → hard-code it in the variant's base CSS and remove the control entry from `TWEAKS`. The controls are scaffolding — they don't live in the final file.
+When the user says "keep that value" → hard-code it in the variant's base CSS and remove the control entry from `TWEAKS`. The controls are scaffolding — they don't live in the final file.
 
 ---
 
 ## Guardrails
 
 - **Never skip Phase 2 questions.**
-- **No frameworks.** Vanilla HTML/CSS/JS only — Dan edits these by hand.
+- **No frameworks.** Vanilla HTML/CSS/JS only — the user edits these by hand.
 - **Real content only.** Pull from context files. If context is thin, ask.
 - **Vibe Projects is outside the vault.** No `[[wikilinks]]` in generated files.
 - **One project = one folder.**

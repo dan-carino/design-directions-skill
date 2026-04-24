@@ -49,7 +49,7 @@ Then in Claude Code, run:
 ## Requirements
 
 - [Claude Code](https://claude.ai/code)
-- The skill outputs to `/Vibe Projects/<project-slug>/` by default — edit `SKILL.md` line 9 to change the output path
+- The skill outputs to `~/design-directions/<project-slug>/` by default — edit `SKILL.md` line 9 to change the output path
 
 ## Notes
 

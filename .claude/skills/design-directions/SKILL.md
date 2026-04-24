@@ -6,7 +6,7 @@ argument-hint: <project name or brief>
 
 # Prototype Skill — Multi-Variant HTML Prototyping
 
-Replicates the Claude Design prototype outcome: ingest context → clarifying questions → multiple standalone hi-fi HTML variants + a canvas file with tabs, sticky notes, and a live Tweaks sidebar. Output lives in a **new subfolder** inside `~/Vibe Projects/` — never in the Vibe Projects root and never mixed into an existing project folder. (If the user has a different preferred output location, honor it.)
+Replicates the Claude Design prototype outcome: ingest context → clarifying questions → multiple standalone hi-fi HTML variants + a canvas file with tabs, sticky notes, and a live Tweaks sidebar. Output lives in a **new subfolder** inside `~/design-directions/` by default — honor a different location if the user specifies one. Never write to the root and never mix output into an existing project folder.
 
 ---
 
@@ -39,7 +39,7 @@ Ask in one batch with a default on each:
    - **Custom** — I'll describe a style or paste a URL
    - **None** — derive tone from context files only
 
-   If the user picks Custom, ask for the style description or URL. If a URL is given, fetch it. If a brand name is given, run `npx getdesign@latest add <brand>` in a temp directory and read the generated DESIGN.md.
+   If the user picks Custom, ask for the style description or URL. If a URL is given, fetch it. If a brand name is given, run `npx getdesign@latest add <brand>` in a temp directory and read the generated DESIGN.md. If that command fails, ask the user to paste a URL or describe the style in a few sentences.
 
 8. **Canvas** — generate a canvas file with tabs, sticky notes, and a live Tweaks sidebar? (Default: Yes.) Present as an AskUserQuestion choice:
    - **Yes — canvas + variants** *(default)* — canvas file wrapping all variants with tabs, sticky notes, and Tweaks sidebar
@@ -59,25 +59,30 @@ Name each variant with a one-line visual concept + the shared content. Confirm b
 
 ### Optional: extra design reference files
 
-If the user has personal design-reference markdown files (e.g. a notes vault), check whether any of the following paths exist and read them for extra guidance. If they don't exist, skip this step — the skill works without them. Use Glob to probe before reading, and silently skip any that are missing rather than reporting them.
+If the user has personal design-reference markdown files (a notes vault, a design docs folder, etc.), read them for extra guidance. If they don't exist, skip this step — the skill works without them.
 
-*Always check — applies to all platforms:*
-- `~/Second brain/03 Resources/Design/Typography and Font Pairing.md`
-- `~/Second brain/03 Resources/Design/Colour Palette Construction.md`
-- `~/Second brain/03 Resources/Design/Brand Tone to Visual Language.md`
-- `~/Second brain/03 Resources/Design/UI Component Patterns.md`
-- `~/Second brain/03 Resources/Design/Motion and Easing Reference.md`
-- `~/Second brain/03 Resources/Design/UX Writing and UI Copy.md`
+**How to find them:** if the user explicitly pointed at a folder, check there. Otherwise use Glob to probe these common locations (silently skip any that are missing — don't report them):
 
-*App platform — also check:*
-- `~/Second brain/03 Resources/Design/Mobile App Design Principles.md`
-- `~/Second brain/03 Resources/Design/Mobile App Design Trends 2026.md`
+- `~/design-notes/`
+- `~/Design/`
+- `~/notes/design/`
+- Any folder in the current project matching `**/design-notes/` or `**/design/reference/`
 
-*Website platform — also check:*
-- `~/Second brain/03 Resources/Design/Web Design Principles.md`
-- `~/Second brain/03 Resources/Design/Web Design Trends 2026.md`
+**What to look for** — markdown files covering:
 
-If the user has pointed at a different design-notes folder, check there instead.
+*Always useful:*
+- Typography and font pairing
+- Colour palette construction
+- Brand tone → visual language mapping
+- UI component patterns (hero, card, CTA, nav, form, empty state)
+- Motion and easing reference
+- UX writing and UI copy
+
+*For app platform — also:* mobile app design principles, current mobile design trends
+
+*For website platform — also:* web design principles, current web design trends
+
+Match by filename keywords (e.g. "typography", "colour"/"color", "motion", "mobile"). If the user has a vault structure you can detect, read those files. If nothing matches, proceed without them — platform-specific requirements below still apply.
 
 ### Platform-specific requirements (apply regardless of reference files)
 
@@ -87,7 +92,7 @@ For **app** variants: thumb zone layout, bottom-anchored nav, gesture patterns, 
 
 If a **visual reference** was chosen in Phase 2 Q7:
 
-- **Named brand (Linear / Stripe / Notion / Vercel / Figma / Spotify or any other):** run `npx getdesign@latest add <brand>` in a temp directory and read the generated DESIGN.md.
+- **Named brand (Linear / Stripe / Notion / Vercel / Figma / Spotify or any other):** run `npx getdesign@latest add <brand>` in a temp directory and read the generated DESIGN.md. `getdesign` is a published npm package ([getdesign.md](https://getdesign.md)) — if the command fails (network error, unknown brand, npx unavailable), fall back by asking the user to either paste a URL for that brand's site or describe the style in a few sentences.
 - **Custom URL:** fetch it directly.
 - **Custom description:** use the description as the base aesthetic layer.
 
@@ -345,7 +350,7 @@ When the user says "keep that value" → hard-code it in the variant's base CSS 
 - **Real content only.** Pull from context files. If context is thin, ask.
 - **No `[[wikilinks]]` or notes-app-specific syntax** in generated files — output is plain HTML.
 - **One project = one folder.**
-- **Always create a new subfolder before writing any files.** Before generating, check whether `~/Vibe Projects/<project-slug>/` already exists and contains files. If it does, create a new subfolder inside it (e.g. `round-2/`, a descriptive slug, or a date suffix) and generate everything there. Never write variant files into a folder that already has HTML files.
+- **Always create a new subfolder before writing any files.** Before generating, check whether `~/design-directions/<project-slug>/` already exists and contains files. If it does, create a new subfolder inside it (e.g. `round-2/`, a descriptive slug, or a date suffix) and generate everything there. Never write variant files into a folder that already has HTML files.
 - **Always use postMessage for iframe wiring**, never `contentDocument` direct access (breaks on `file://`).
 - **Every variant must define the 4 standard CSS vars** (`--accent`, `--bg`, `--h1-size`, `--body-size`) and include the postMessage listener — this is the contract the canvas depends on.
 - **Never hide a parent of a `position: fixed` child using `display: none` or `visibility: hidden`.** Both properties cascade to fixed descendants and break the full-screen tab mode. Hide non-active variants directly (`body.variant-mode .variant { display: none }`) and let the empty parent grid collapse on its own.

@@ -17,7 +17,7 @@ No frameworks. No build step. Pure HTML/CSS/JS you can open in a browser and edi
 ## Output
 
 ```
-/Vibe Projects/<project-slug>/
+~/design-directions/<project-slug>/
   variant-a-<slug>.html
   variant-b-<slug>.html
   variant-c-<slug>.html
